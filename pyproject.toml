@@ -1,0 +1,15 @@
+[project]
+name = "Spacey"
+version = "0.0.1"
+authors = [
+  { name="NotAussie", email="notaussie@duck.com" },
+]
+description = "A simple, and easy to use Revolt bot about space powered by the NASA API."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]

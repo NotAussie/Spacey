@@ -1,0 +1,5 @@
+rich==13.8.1
+revolt.py==0.2.0
+python-dotenv==1.0.1
+aiofiles==24.1.0
+aiohttp-client-cache[all]==0.11.1
