@@ -32,5 +32,5 @@ class misc(commands.Cog):
         )
 
 
-def load_module(client: Client):
+def setup(client: Client):
     client.add_cog(misc(client))  # type: ignore

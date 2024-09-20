@@ -28,18 +28,17 @@ async def main():
     async with ClientSession() as session:
         client = Client(session, os.getenv("REVOLT_TOKEN"), logger=logger)
 
-        # Automatically load each module via running the "load_module" method in each module's file
+        # Automatically load each module via running the "setup" method in each module's file
         for module in os.listdir("./modules/"):
             if module.endswith(".py") and module != "__init__.py":
                 module_name = module[:-3]
                 logger.info(f"Loading module {module_name}")
 
-                # Import the module and call the load_module function
-                module = importlib.import_module(f"modules.{module_name}")
-                if hasattr(module, "load_module"):
-                    module.load_module(
-                        client
-                    )  # Call the load_module function with the client
+                try:
+                    client.load_extension(f"modules.{module_name}")
+                    logger.info(f"Loaded module {module_name}")
+                except:
+                    logger.error(f"Failed to load module {module_name}", exc_info=True)
 
         await asyncio.sleep(1)  # Wait for the modules to load
         await client.start()

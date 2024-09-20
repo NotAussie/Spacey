@@ -29,7 +29,7 @@ class epic(commands.Cog):
                 embeds=[
                     revolt.SendableEmbed(
                         title="Invalid input",
-                        description="There's only 8 epic angles, select from `1` to `9`.",
+                        description="There's only 9 epic angles, select from `1` to `9`.",
                     )
                 ]
             )
@@ -84,5 +84,5 @@ class epic(commands.Cog):
             )
 
 
-def load_module(client: Client):
+def setup(client: Client):
     client.add_cog(epic(client))  # type: ignore

@@ -66,5 +66,5 @@ class apod(commands.Cog):
             )
 
 
-def load_module(client: Client):
+def setup(client: Client):
     client.add_cog(apod(client))  # type: ignore

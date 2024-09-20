@@ -61,11 +61,10 @@ class Client(commands.CommandsClient):
         )
 
         await self.edit_status(
-            presence=revolt.PresenceType.online, text="Watching the stars!"
+            presence=revolt.PresenceType.online, text="Watching the stars! 🌠"
         )
 
         self.hasInitialized = True
 
     async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
-        self.logger.error("An error occurred!")
-        print("[grey]" + getDetailed(error) + "[/grey]")
+        self.logger.error("An error occurred!", exc_info=error)
