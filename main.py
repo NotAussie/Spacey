@@ -11,7 +11,6 @@ from aiohttp import ClientSession
 
 # Custom imports
 from utils.client import Client
-from utils.dman import purgeExpired
 
 # Setup logging
 logging.basicConfig(handlers=[RichHandler()], level=logging.DEBUG)
@@ -20,6 +19,8 @@ logging.getLogger(name="aiosqlite").setLevel(logging.WARNING)
 logging.getLogger(name="aiohttp_client_cache").setLevel(logging.WARNING)
 logging.getLogger("revolt").setLevel(logging.WARNING)
 logging.getLogger("aiohttp").setLevel(logging.WARNING)
+logging.getLogger("asyncio").setLevel(logging.WARNING)
+logging.getLogger("charset_normalizer").setLevel(logging.WARNING)
 
 
 async def main():
@@ -40,7 +41,7 @@ async def main():
                         client
                     )  # Call the load_module function with the client
 
-        await purgeExpired()
+        await asyncio.sleep(1)  # Wait for the modules to load
         await client.start()
 
 
