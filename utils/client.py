@@ -3,13 +3,9 @@ import revolt
 from revolt.ext import commands
 
 # Utility imports
-from utils.detailedtrace import getDetailed
-from rich import print
 import logging
 from aiohttp_client_cache import SQLiteBackend
-
-# Type imports
-from typing_extensions import Self
+from utils.errorHandler import errorHandler
 
 
 class Client(commands.CommandsClient):
@@ -17,15 +13,12 @@ class Client(commands.CommandsClient):
         self,
         *args,
         logger: logging.Logger = logging.getLogger("Spacey"),
-        help_command: (
-            commands.HelpCommand[Self] | None | revolt.utils._Missing
-        ) = revolt.utils.Missing,
         case_insensitive: bool = False,
         **kwargs,
     ):
         super().__init__(
             *args,
-            help_command=help_command,
+            help_command=None,
             case_insensitive=case_insensitive,
             **kwargs,
         )
@@ -42,7 +35,7 @@ class Client(commands.CommandsClient):
 
         self.imagesCache = SQLiteBackend(
             cache_name="./.cache/images.sqlite",
-            expire_after=60 * 60,
+            expire_after=2 * 60 * 60,
             allowed_codes=[200],
             allowed_methods=["GET", "POST"],
             timeout=2.5,
@@ -51,7 +44,11 @@ class Client(commands.CommandsClient):
         self.hasInitialized = False
 
     async def get_prefix(self, message: revolt.Message) -> str | list[str]:
-        return [self.user.mention, "s!", "/s"]
+        return [
+            "/s ",
+            self.user.mention,
+            "s!",
+        ]
 
     async def on_ready(self):
         self.logger.info(
@@ -67,4 +64,6 @@ class Client(commands.CommandsClient):
         self.hasInitialized = True
 
     async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
-        self.logger.error("An error occurred!", exc_info=error)
+        await errorHandler(ctx, error)
+
+        self.logger.error("An error occurred", exc_info=True)

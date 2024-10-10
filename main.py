@@ -3,24 +3,48 @@ import asyncio
 import os
 from dotenv import load_dotenv
 import logging
-import importlib
 
 # Miscellaneous imports
 from rich.logging import RichHandler
-from aiohttp import ClientSession
+from logging.handlers import RotatingFileHandler
+from aiohttp import ClientSession, ClientConnectionError
 
 # Custom imports
 from utils.client import Client
 
+import logging
+from logging.handlers import RotatingFileHandler
+from rich.logging import RichHandler
+
+# Configure the file handler
+FileHandler = RotatingFileHandler(
+    "logs/spacey.log", maxBytes=5 * 1024 * 1024, backupCount=5
+)
+FileHandler.setLevel(logging.DEBUG)
+FileFormatter = logging.Formatter(
+    "%(levelname)s:%(asctime)s:%(name)s:%(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
+FileHandler.setFormatter(FileFormatter)
+
 # Setup logging
-logging.basicConfig(handlers=[RichHandler()], level=logging.DEBUG)
-logger = logging.getLogger("Spacey")
+logging.basicConfig(
+    handlers=[
+        RichHandler(),
+        FileHandler,
+    ],
+    level=logging.DEBUG,
+)
+
+# Disable loggers
 logging.getLogger(name="aiosqlite").setLevel(logging.WARNING)
 logging.getLogger(name="aiohttp_client_cache").setLevel(logging.WARNING)
 logging.getLogger("revolt").setLevel(logging.WARNING)
 logging.getLogger("aiohttp").setLevel(logging.WARNING)
 logging.getLogger("asyncio").setLevel(logging.WARNING)
 logging.getLogger("charset_normalizer").setLevel(logging.WARNING)
+
+logger = logging.getLogger("Spacey")
 
 
 async def main():
@@ -40,8 +64,26 @@ async def main():
                 except:
                     logger.error(f"Failed to load module {module_name}", exc_info=True)
 
-        await asyncio.sleep(1)  # Wait for the modules to load
-        await client.start()
+        while True:
+            try:
+                await client.start()
+
+            except ClientConnectionError:
+                logger.error(f"Connection failed", exc_info=True)
+                logger.info("Attempting to reconnect in 30 seconds...")
+                await asyncio.sleep(30)
+
+                try:
+                    await client.start()
+                except:
+                    logger.error(f"Failed to reconnect (shutting down)", exc_info=True)
+                    break
+
+            except KeyboardInterrupt:
+                logger.info("Shutting down... (KeyboardInterrupt)")
+                break
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    logger.info("Starting Spacey...")
+    asyncio.run(main())
