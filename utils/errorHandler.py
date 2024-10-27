@@ -3,20 +3,20 @@ import revolt
 from revolt.ext import commands
 
 # View imports
-from views import Error
+from views import error
 
 
-async def errorHandler(ctx: commands.Context, error: Exception):
-    if isinstance(error, commands.CommandNotFound):
+async def errorHandler(ctx: commands.Context, e: Exception):
+    if isinstance(e, commands.CommandNotFound):
 
-        await ctx.message.reply(embeds=[Error(f"The entered command does not exist.")])
+        await ctx.message.reply(embeds=[error("The entered command does not exist.")])
 
-    elif isinstance(error, commands.errors.CommandOnCooldown):
+    elif isinstance(e, commands.errors.CommandOnCooldown):
 
         await ctx.message.reply(
             embeds=[
-                Error(
-                    error=f"Command is on cooldown for `{error.retry_after:.2f}` seconds."
+                error(
+                    error=f"Command is on cooldown for `{e.retry_after:.2f}` seconds."
                 )
             ]
         )

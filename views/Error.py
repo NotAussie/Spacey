@@ -1,7 +1,7 @@
 from revolt import SendableEmbed
 
 
-def Error(description: str | None = None, error: str | None = None) -> SendableEmbed:
+def error(description: str | None = None, error: str | None = None) -> SendableEmbed:
 
     description = (
         description

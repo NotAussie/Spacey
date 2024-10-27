@@ -74,16 +74,16 @@ class spacepeeps(commands.Cog):
 
             peopleSection = revolt.SendableEmbed(
                 title="People on the ISS",
-                description=f"People currently on the ISS"
+                description="People currently on the ISS"
                 + "\n\n"
                 + peopleText.removesuffix("\n\n"),
             )
 
             await msg.edit(embeds=[issSection])
 
-            for i in range(10):
+            for _ in range(10):
                 try:
-                    message, member, emoji = await self.client.wait_for(
+                    _, _, emoji = await self.client.wait_for(
                         "reaction_add",
                         check=lambda message, member, emoji: member.id == ctx.author.id
                         and message.id == msg.id,

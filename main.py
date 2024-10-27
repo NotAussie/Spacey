@@ -60,23 +60,23 @@ async def main():
 
                 try:
                     client.load_extension(f"modules.{module_name}")
-                    logger.info(f"Loaded module {module_name}")
-                except:
-                    logger.error(f"Failed to load module {module_name}", exc_info=True)
+                    logger.info("Loaded module", module_name)
+                except Exception:
+                    logger.error("Failed to load module", module_name, exc_info=True)
 
         while True:
             try:
                 await client.start()
 
             except ClientConnectionError:
-                logger.error(f"Connection failed", exc_info=True)
+                logger.error("Connection failed", exc_info=True)
                 logger.info("Attempting to reconnect in 30 seconds...")
                 await asyncio.sleep(30)
 
                 try:
                     await client.start()
-                except:
-                    logger.error(f"Failed to reconnect (shutting down)", exc_info=True)
+                except Exception:
+                    logger.error("Failed to reconnect (shutting down)", exc_info=True)
                     break
 
             except KeyboardInterrupt:
