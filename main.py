@@ -46,6 +46,9 @@ logging.getLogger("charset_normalizer").setLevel(logging.WARNING)
 
 logger = logging.getLogger("Spacey")
 
+if os.name == "nt":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 
 async def main():
     load_dotenv()
@@ -60,9 +63,11 @@ async def main():
 
                 try:
                     client.load_extension(f"modules.{module_name}")
-                    logger.info("Loaded module", module_name)
+                    logger.info("Loaded module: %s", module_name)
                 except Exception:
-                    logger.error("Failed to load module", module_name, exc_info=True)
+                    logger.error(
+                        "Failed to load module: %s", module_name, exc_info=True
+                    )
 
         while True:
             try:
